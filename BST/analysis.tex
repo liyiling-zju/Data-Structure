@@ -1,0 +1,168 @@
+
+\documentclass[twoside,a4paper]{article}
+\usepackage{geometry}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+% useful packages.
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{layout}
+\usepackage{CJKutf8}
+\usepackage{listings}
+
+% some common command
+\newcommand{\dif}{\mathrm{d}}
+\newcommand{\avg}[1]{\left\langle #1 \right\rangle}
+\newcommand{\difFrac}[2]{\frac{\dif #1}{\dif #2}}
+\newcommand{\pdfFrac}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\OFL}{\mathrm{OFL}}
+\newcommand{\UFL}{\mathrm{UFL}}
+\newcommand{\fl}{\mathrm{fl}}
+\newcommand{\op}{\odot}
+\newcommand{\Eabs}{E_{\mathrm{abs}}}
+\newcommand{\Erel}{E_{\mathrm{rel}}}
+
+\begin{document}
+\begin{CJK*}{UTF8}{gkai}
+
+\pagestyle{fancy}
+\fancyhead{}
+\lhead{22035037 数学科学学院 计算数学专业}
+\chead{数据结构作业 \#05}
+\rhead{2020/11/23}
+
+
+\section*{ 二叉搜索树的模板化实现}
+
+\subsection*{a 文件说明}
+在$BinarySearchTree.h$文件中定义一个类，实现二叉搜索树的min、max、successor、predecessor、tree\_search、insert、
+
+\noindent delete、inorder\_walk等功能，在$main.cpp$文件中测试各项功能，类构造及测试设计如下：
+
+BinarySearchTree$\left< \rm{T} \right> $
+
+    |---class--Node：包含一个T类型关键字和三个分别指向left kid、right kid和parent的指针；
+    
+    |---function--insert(T)：向二叉树中插入关键字为给定值的结点；
+    
+    |---function--min(Node*)：给定一个结点，返回一个指向以该结点为根的子树中最小元素的指针；
+    
+    |---function--max(Node*)：给定一个结点，返回一个指向以该结点为根的子树中最大元素的指针；
+    
+    |---function--successor(Node*)：给定一个结点，返回一个指向以该结点的后继的指针；
+    
+    |---function--predecessor(Node*)：给定一个结点，返回一个指向以该结点的前驱的指针；
+
+    |---function--tree\_delete(Node*)：从二叉树中删除给定结点；
+    
+    |---function--tree\_search(Node*, T)：查找关键字等于给定值的结点并返回指向给结点的指针；
+
+    |---function--inorder\_walk()：从根节点开始，升序输出二叉树中结点对应的关键字；
+
+    |---function--RandArray(T*,int)：将输入的数组打乱顺序；
+    
+    |---function--test()：测试successor(Node*),predecessor(Node*),min(Node*),max(Node*),tree\_search(Node*,T)及
+
+    tree\_delete(Node*)函数的测试；
+
+\subsection*{b 测试方案及结果}
+
+\noindent 1.测试方案
+
+\noindent (1)对类中各函数功能的测试
+\begin{lstlisting}[language=R]
+template <typename T>
+void BinaryTree<T>::test()
+{
+  std::cout << "min(root)=" << min(root)->data << std::endl;
+  std::cout << "max(root)=" << max(root)->data << std::endl;
+  std::cout << "successor(root):" << successor(root)->data << std::endl;
+  std::cout << "predecessor(root):" << predecessor(root)->data << std::endl;
+  std::cout << "tree\_search(root,12):" << tree\_search(root,(T)12) << std::endl;
+  tree_delete(root->lc);
+  std::cout << "after tree\_delete(root->lc): " << std::endl;
+  inorder_walk();
+};
+\end{lstlisting}
+
+\noindent (2)排序：测试乱序函数、插入及中序输出
+
+\noindent · 打乱一个数组中的元素
+\begin{lstlisting}[language=R]
+template <typename T>
+void BinaryTree<T>::RandArray(T* A, int n)
+{
+  T a;
+  int x;
+  srand(time(NULL));
+  for(int i = 0; i < n; i++)
+    {
+      x=rand() % n;
+      a = A[i];
+      A[i] = A[x];
+      A[x] = a;
+    }
+};
+\end{lstlisting}
+
+\noindent · 利用insert函数将该数组插入，再利用inorder\_walk函数中序输出；
+
+
+\noindent 2. 测试结果
+
+\noindent 下面是一次测试的结果(RandArray函数每次产生的随机序列都不同，随机后的数组也会有所不同)。
+
+\noindent To sort :B = [ 11 12 13 14 15 16 17 18 19 20 ]
+
+\noindent random B = [ 14 15 18 16 19 20 13 17 11 12 ]
+
+\noindent result of BST\_Sort:
+
+\noindent 11	12	13	14	15	16	17	18	19	20
+
+\noindent min(root) = 11
+
+\noindent max(root) = 20
+
+\noindent successor(root): 15
+
+\noindent predecessor(root): 13
+
+\noindent tree\_search(root,12): 0x561393dd9470
+
+\noindent after tree\_delete(root-$>$lc):
+
+\noindent 11	12	14	15	16	17	18	19	20
+
+
+
+  
+\subsection*{c  排序稳定性和效率分析}
+
+\noindent 1. 稳定性
+
+针对原始的BST算法，insert函数将小于作为left kid，大于等于作为right kid，结合inorder\_walk函数定义，一定是先遍历升序输出左子树，接着输出根节点，再遍历输出右子树，因此关键字相同的结点按照输入顺序输出，故基于BST的排序算法是稳定的；
+
+针对先乱序再排序的BST排序算法，由于乱序会导致不稳定，因此最终结果也是不稳定的；
+
+\noindent 2. 效率
+
+分析两种算法的实现，根据RandArray函数定义，将数组随机打乱是$O(n)$的，两种算法除随机部分及比较的顺序不同之外其余步骤均相同，随机快排也可以写为二叉搜索树的形式，因此两种算法效率差异不大，平均运行时间均为$\Theta (n\lg n)$。
+
+
+\end{CJK*}
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

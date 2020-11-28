@@ -1,0 +1,4 @@
+make run: 生成并执行可执行文件，生成目标文件；
+make analysis: 执行analysis.tex文件，生成.pdf文档；
+make clean: 清除可执行文件及*.o,*.aux,*.log文件；
+make realclean: 执行"make clean"，并清除*.pdf,data.*文件。

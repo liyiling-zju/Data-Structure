@@ -1,0 +1,8 @@
+
+make run: 运行main.cpp并执行可执行文件，输出测试结果；
+
+make analysis: 运行analysis.tex，生成说明文件；
+
+make clean: 删除可执行文件main及*.o *.aux *.log文件；
+
+make realclean: 执行 make clean 命令并删除*.pdf文件。
